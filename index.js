@@ -1,14 +1,48 @@
 const express = require("express");
+const fs = require("fs");
+const path = require("path");
+
 const app = express();
 
 app.use(express.json());
+
 
 let converter = "";
 let fromUnit = "";
 let toUnit = "";
 
-// Route 1: Select converter
+// Create history folder
+const historyFolder = path.join(__dirname, "Record");
+
+if (!fs.existsSync(historyFolder)) {
+    fs.mkdirSync(historyFolder);
+}
+
+// Save History
+function saveHistory(data) {
+
+    const filePath = path.join(historyFolder, "Record.txt");
+
+    const record = `
+Date: ${new Date().toLocaleString()}
+Username: ${data.username}
+Converter: ${data.converter}
+From: ${data.from}
+To: ${data.to}
+Input: ${data.input}
+Result: ${data.result}
+`;
+
+    fs.appendFile(filePath, record, (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+}
+// Select Converter
+
 app.post("/converter", (req, res) => {
+
     const { type } = req.body;
 
     const converters = ["length", "weight", "temperature"];
@@ -26,10 +60,12 @@ app.post("/converter", (req, res) => {
     res.json({
         message: `${type} converter selected`
     });
+
 });
 
-// Route 2: Select units
-app.post("/units", (req, res) => {
+// Select Units
+
+app.post("/selectUnit", (req, res) => {
 
     if (!converter) {
         return res.status(400).json({
@@ -39,53 +75,63 @@ app.post("/units", (req, res) => {
 
     const { from, to } = req.body;
 
-    let units = [];
+    let selectunit = [];
 
     switch (converter) {
+
         case "length":
-            units = ["km", "m", "cm"];
+            selectunit = ["km", "m", "cm"];
             break;
 
         case "weight":
-            units = ["kg", "g", "lb"];
+            selectunit = ["kg", "g", "lb"];
             break;
 
         case "temperature":
-            units = ["c", "f"];
+            selectunit = ["c", "f"];
             break;
     }
 
-    if (!units.includes(from) || !units.includes(to)) {
+    if (!selectunit.includes(from) || !selectunit.includes(to)) {
+
         return res.status(400).json({
-            error: `Available units: ${units.join(", ")}`
+            error: `Available units: ${selectunit.join(", ")}`
         });
+
     }
 
     fromUnit = from;
     toUnit = to;
 
     res.json({
-        message: `Units selected: ${from} to ${to}`
+        message: `${fromUnit} -> ${toUnit}`
     });
+
 });
 
-// Route 3: Convert value
-app.post("/convert", (req, res) => {
-//check converter is select or not
+// Convert Value
+app.post("/convertvalue", (req, res) => {
+ const { username, value } = req.body;
     if (!converter) {
         return res.status(400).json({
             error: "Select converter first."
         });
     }
-//check unit is seleccted or not
+
     if (!fromUnit || !toUnit) {
         return res.status(400).json({
             error: "Select units first."
         });
     }
 
-    const { value } = req.body;
-//check calue is num or not
+   
+
+    if (!username) {
+        return res.status(400).json({
+            error: "Username is required."
+        });
+    }
+
     if (typeof value !== "number") {
         return res.status(400).json({
             error: "Value must be a number."
@@ -166,16 +212,47 @@ app.post("/convert", (req, res) => {
         });
     }
 
+   saveHistory({
+    username,
+    converter,
+    from: fromUnit,
+    to: toUnit,
+    input: value,
+    result
+});
+
     res.json({
+        username:username,
         converter,
         from: fromUnit,
         to: toUnit,
         input: value,
         result
     });
+
 });
+// View History
+app.get("/history", (req, res) => {
 
+    const filePath = path.join(historyFolder, `Record.txt`);
 
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({
+            error: "No history found for this user."
+        });
+    }
+
+    fs.readFile(filePath, "utf8", (err, data) => {
+
+        if (err) {
+            return res.status(500).json({
+                error: "Unable to read history."
+            });
+        }
+
+        res.send(data);
+    });
+});
 app.listen(3000, () => {
     console.log("Server running on PORT");
 });
