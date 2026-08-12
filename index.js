@@ -19,15 +19,17 @@ if (!fs.existsSync(historyFolder)) {
 function saveHistory(data) {
 
     const filePath = path.join(historyFolder, "Record.txt");
-
-    const record = `
-Date: ${new Date().toLocaleString()}
+   const record =
+`Date: ${new Date().toLocaleString()}
 Username: ${data.username}
 Converter: ${data.converter}
 From: ${data.from}
 To: ${data.to}
 Input: ${data.input}
-Result: ${data.result}`;
+Result: ${data.result}
+
+`;
+
 
     fs.appendFile(filePath, record, (err) => {
 
@@ -54,7 +56,6 @@ app.post("/conversions", (req, res) => {
 
     // Check username
     if (!username) {
-
         return res.status(400).json({
             error: "Username is required."
         });
@@ -210,7 +211,7 @@ app.post("/conversions", (req, res) => {
 });
 
            // View History
-app.get("/conversions", (req, res) => {
+app.get("/history", (req, res) => {
     const filePath = path.join(
         historyFolder,
         "Record.txt"
