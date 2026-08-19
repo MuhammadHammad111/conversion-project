@@ -17,7 +17,6 @@ app.use( session({
         }
     })
 );
-
             // USERS FILE
 const usersFile = path.join(__dirname, "users.json");
 // Create users.json if it does not exist

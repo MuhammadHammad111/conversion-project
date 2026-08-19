@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1787142466156,
+    "username": "Ali",
+    "password": "$2b$10$94PzK8WvxILxXE7fhmsrOOA.fUYaUQdXCVEnxCRzpMvdBWY7vzfOa",
+    "role": "user"
+  },
+  {
+    "id": 1787143014436,
+    "username": "Hashir",
+    "password": "$2b$10$se3cP70Sv3jzdppMMzAuaO/aJxYSf8Tam8T1UBJWkTZEGjozFGZ1u",
+    "role": "user"
+  },
+  {
+    "id": 1787144139183,
+    "username": "Asif",
+    "password": "$2b$10$fAp5MvEZeFkhyNjfrb/HMezJLZxrkRo5V4FipgVN0KlKEVKfgdIkG",
+    "role": "user"
+  },
+  {
+    "id": 1787144253536,
+    "username": "Hamad",
+    "password": "$2b$10$BvepoO8pFPuCPdY4LNaxk.1d37N2dGdFaf/ynpyB9Z2ajyFw65Pqe",
+    "role": "admin"
+  },
+  {
+    "id": 1787145663916,
+    "username": "Ahmad",
+    "password": "$2b$10$D5wng/M16QCZY3NTeuBIhOyadYv5iUNkiTDHjmganJRQukiv7U9JS",
+    "role": "user"
+  }
+]
