@@ -1,5 +1,5 @@
 const express = require("express");
-const sessionConfig = require("./config/session");
+const sessionConfig = require("./configure/session");
 
 const authRoutes = require("./routes/authRoutes");
 const conversionRoutes = require("./routes/conversionRoutes");
