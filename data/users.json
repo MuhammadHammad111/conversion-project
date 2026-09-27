@@ -28,5 +28,11 @@
     "username": "Ahmad",
     "password": "$2b$10$D5wng/M16QCZY3NTeuBIhOyadYv5iUNkiTDHjmganJRQukiv7U9JS",
     "role": "user"
+  },
+  {
+    "id": 1788411303710,
+    "username": "waleed",
+    "password": "$2b$10$rQvUMgFDpWF1gqxFZZ6ok.zrhoSIbs/n.HRbvCHJttDRH/.rGatvG",
+    "role": "user"
   }
 ]

@@ -1,6 +1,11 @@
 const historyRepository =
     require("../repositories/historyRepository");
 
+
+// ======================================
+// CREATE HISTORY
+// ======================================
+
 function createHistory(data) {
 
     const record =
@@ -18,63 +23,91 @@ Result: ${data.result}
     historyRepository.saveRecord(record);
 }
 
-function getUserHistory(username, role) {
 
-    return new Promise((resolve, reject) => {
+// ======================================
+// GET USER HISTORY
+// FS → DATABASE
+// ======================================
 
-        if (!historyRepository.historyExists()) {
-            return reject({
-                status: 404,
-                message: "No history found."
-            });
-        }
+async function getUserHistory(username, role) {
 
-        historyRepository.getHistory(
-            (err, data) => {
+    // ==================================
+    // ADMIN
+    // ==================================
 
-                if (err) {
-                    return reject({
-                        status: 500,
-                        message: "Unable to read history."
-                    });
-                }
+    if (role === "admin") {
 
-                // ADMIN
-                if (role === "admin") {
-                    return resolve(data);
-                }
+        return getAllHistory();
+    }
 
-                // NORMAL USER
-                const records =
-                    data
-                        .split("\n\n")
-                        .filter(record =>
-                            record.includes(
-                                `Username: ${username}`
-                            )
-                        );
 
-                if (records.length === 0) {
-                    return reject({
-                        status: 404,
-                        message:
-                            "No history found for this user."
-                    });
-                }
+    // ==================================
+    // STEP 1: SEARCH FS
+    // ==================================
 
-                resolve(
-                    records.join("\n\n")
-                );
-            }
+    const fsRecord =
+        await historyRepository.findHistoryInFS(
+            username
         );
-    });
+
+
+    // ==================================
+    // IF FOUND IN FS
+    // ==================================
+
+    if (fsRecord) {
+
+        return {
+            source: "FS",
+            record: fsRecord
+        };
+    }
+
+
+    // ==================================
+    // STEP 2: SEARCH DATABASE
+    // ==================================
+
+    const dbRecord =
+        await historyRepository.findHistoryInDB(
+            username
+        );
+
+
+    // ==================================
+    // IF FOUND IN DATABASE
+    // ==================================
+
+    if (dbRecord) {
+
+        return {
+            source: "Database",
+            record: dbRecord
+        };
+    }
+
+
+    // ==================================
+    // NOT FOUND ANYWHERE
+    // ==================================
+
+    throw {
+        status: 404,
+        message: "Record not found."
+    };
 }
+
+
+// ======================================
+// GET ALL HISTORY
+// ======================================
 
 function getAllHistory() {
 
     return new Promise((resolve, reject) => {
 
         if (!historyRepository.historyExists()) {
+
             return reject({
                 status: 404,
                 message: "No history found"
@@ -85,6 +118,7 @@ function getAllHistory() {
             (err, data) => {
 
                 if (err) {
+
                     return reject({
                         status: 500,
                         message:
@@ -98,7 +132,9 @@ function getAllHistory() {
     });
 }
 
+
 module.exports = {
+
     createHistory,
     getUserHistory,
     getAllHistory
