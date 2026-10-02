@@ -34,5 +34,11 @@
     "username": "waleed",
     "password": "$2b$10$rQvUMgFDpWF1gqxFZZ6ok.zrhoSIbs/n.HRbvCHJttDRH/.rGatvG",
     "role": "user"
+  },
+  {
+    "id": 1790778493372,
+    "username": "Hammad",
+    "password": "$2b$10$qc20g8Pd3RCkigDPGDhSxuEmucKEAqdfv8Hk/N.OORzZepicWQuC.",
+    "role": "user"
   }
 ]
